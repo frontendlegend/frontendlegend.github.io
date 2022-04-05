@@ -1,0 +1,16 @@
+body {
+  font-family: monospace;
+}
+.container {
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  padding: 20px;
+}
+.currentColor {
+  margin: 5px 0 10px;
+  font-size: 14px;
+}
+#hexText {
+  font-size: 28px;
+}

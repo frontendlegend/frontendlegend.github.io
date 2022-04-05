@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>stars-canvas</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <canvas id="fieldCanvas" width="600" height="50"></canvas>
+      <p class="currentColor">
+        Текущий цвет: <span id="hexText"></span>
+      </p>
+      <canvas id="starsCanvas" width="600" height="600"></canvas>
+    </div>
+
+    <script src="js/drawStar.js"></script>
+    <script src="js/utils.js"></script>
+
+    <script>
+      const fieldCanvas = document.getElementById("fieldCanvas");
+      const starsCanvas = document.getElementById("starsCanvas");
+      const hexText = document.getElementById("hexText");
+      let hex = "#eeeeee";
+
+      function updateHexText() { hexText.textContent = hex }
+      updateHexText();
+
+      const fieldCtx = fieldCanvas.getContext("2d");
+      fieldCtx.fillStyle = hex;
+      fieldCtx.fillRect(0, 0, 600, 600);
+      
+      const starsCtx = starsCanvas.getContext("2d");
+      starsCtx.fillStyle = "#eee";
+      starsCtx.fillRect(0, 0, 600, 600);
+
+      drawStar(starsCtx, 100, 250, 5, 70, 30, "red");
+      drawStar(starsCtx, 300, 150, 5, 70, 30, "blue");
+      drawStar(starsCtx, 500, 250, 5, 70, 30, "green");
+      drawStar(starsCtx, 400, 450, 5, 70, 30, "yellow");
+      drawStar(starsCtx, 200, 450, 5, 70, 30, "black");
+
+      starsCanvas.addEventListener("click", e => {
+        const pos = findCursorPos(starsCanvas);
+        const x = e.pageX - pos.x;
+        const y = e.pageY - pos.y;
+        const rgb = starsCtx.getImageData(x, y, 1, 1).data;
+        hex = "#" + ("000000" + rgbToHex(rgb[0], rgb[1], rgb[2])).slice(-6);
+
+        fieldCtx.fillStyle = hex;
+        fieldCtx.fillRect(0, 0, 600, 600);
+
+        updateHexText();
+      });
+    </script>
+  </body>
+</html>
