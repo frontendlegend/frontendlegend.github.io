@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>users-backbone</title>
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+  <div id="app">
+    <h1 class="title">Пользователи</h1>
+    <table>
+      <thead>
+        <tr>
+          <th class="thName">Имя</th>
+          <th class="thPhone">Телефон</th>
+          <th class="thBtn"></th>
+          <th class="thBtn"></th>
+        </tr>
+      </thead>
+      <tbody id="rows">
+        <tr class="loadingRow">
+          <td colspan="4">Получение данных</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="newUser">
+      <div class="inputGroup">
+        <input id="name" class="mainInput name" placeholder="Введите имя" />
+        <span id="nameError" class="error"></span>
+      </div>
+      <div class="inputGroup">
+        <input id="phone" class="mainInput phone" placeholder="Введите телефон" />
+        <span id="phoneError" class="error"></span>
+      </div>
+      <button id="add">Добавить</button>
+    </div>
+  </div>
+
+  <script type="text/template" id="row-template">
+    <td>
+      <label class="tableLabel"><%- name %></label>
+      <input class="tableInput nameInput" value="<%- name %>" placeholder="Имя" />
+      <span class="error nameError"></span>
+    </td>
+    <td>
+      <label class="tableLabel"><%- phone %></label>
+      <input class="tableInput phoneInput" value="<%- phone %>" placeholder="Телефон" />
+      <span class="error phoneError"></span>
+    </td>
+    <td>
+      <button class="editBtn">Редактировать</button>
+      <button class="saveBtn">Сохранить</button>
+    </td>
+    <td>
+      <button class="removeBtn">Стереть</button>
+    </td>
+  </script>
+
+  <script src="lib/jquery-3.6.0.min.js"></script>
+  <script src="lib/underscore-umd-min.js"></script>
+  <script src="lib/backbone-min.js"></script>
+  <script src="lib/backbone.localStorage-min.js"></script>
+
+  <script type="text/javascript">
+    var app = {};
+  </script>
+
+  <script src="js/validation.js"></script>
+  <script src="js/models/userModel.js"></script>
+  <script src="js/collections/userList.js"></script>
+  <script src="js/models/initialUsersModel.js"></script>
+  <script src="js/mockData.js"></script>
+
+  <script type="text/javascript">
+    app.userList = new app.UserList();
+  </script>
+
+  <script src="js/views/userRowView.js"></script>
+  <script src="js/views/appView.js"></script>
+
+  <script type="text/javascript">
+    app.appView = new app.AppView();
+    const loadingRow = document.querySelector(".loadingRow");
+    
+    if (!app.userList.length) {
+      loadingRow.classList.add("loading");
+      const initialUsers = new app.InitialUsers();
+
+      initialUsers.fetch().done(function(initialUsersArray) {
+        initialUsersArray.forEach(initialUser => {
+          app.userList.create(initialUser)
+        });
+
+        loadingRow.classList.remove("loading");
+      }).fail(function() {
+        console.log(
+          "failed to fetch initial users from server, " +
+          "using mock data instead"
+        );
+
+        mockData.forEach(initialUser => {
+          app.userList.create(initialUser)
+        });
+
+        loadingRow.classList.remove("loading");
+      });
+    }
+  </script>
+</body>
+</html>
